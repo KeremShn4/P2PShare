@@ -1,0 +1,57 @@
+services:
+  peer1:
+    build:
+      context: .
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-eclipse-temurin:17-jdk}
+    container_name: p2p-peer1
+    environment:
+      SHARED_FOLDER: /shared
+      SECRET: cse471
+      TCP_PORT: 5001
+    volumes:
+      - ./docker-data/peer1:/shared
+    ports:
+      - "5001:5001"
+    networks:
+      - p2pnet
+
+  peer2:
+    build:
+      context: .
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-eclipse-temurin:17-jdk}
+    container_name: p2p-peer2
+    environment:
+      SHARED_FOLDER: /shared
+      SECRET: cse471
+      TCP_PORT: 5002
+    volumes:
+      - ./docker-data/peer2:/shared
+    ports:
+      - "5002:5002"
+    networks:
+      - p2pnet
+
+  downloader:
+    build:
+      context: .
+      args:
+        BASE_IMAGE: ${BASE_IMAGE:-eclipse-temurin:17-jdk}
+    container_name: p2p-downloader
+    environment:
+      SHARED_FOLDER: /shared
+      SECRET: cse471
+      TCP_PORT: 5003
+      AUTO_DOWNLOAD: "true"
+    volumes:
+      - ./docker-data/downloader:/shared
+    ports:
+      - "5003:5003"
+    networks:
+      - p2pnet
+
+networks:
+  p2pnet:
+    name: p2pnet
+    driver: bridge
